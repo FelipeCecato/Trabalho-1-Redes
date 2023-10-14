@@ -75,7 +75,7 @@ def handle_client(client_socket):
             # Abre a janela
             root.mainloop()
 
-            estado = 2 # Agora o cliente já está respondendo
+            estado = 2 # Agora o usuario já está respondendo
     client_socket.close()
 
 # Defina o endereço e a porta em que o servidor irá escutar
