@@ -7,4 +7,5 @@ Alunos:
 * Felipe Cecato - 12547785.
   
 Link para o vídeo com a explicação do trabalho: 
+
 Todos os programas foram executados em uma máquina Ubuntu 22.04.3
