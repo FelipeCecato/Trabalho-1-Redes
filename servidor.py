@@ -17,12 +17,16 @@ def handle_client(client_socket):
             resultado.config(text="Parabéns! Você acertou!")
         else:
             resultado.config(text="Tente novamente.")
-
+    # Estado do jogo
     estado = 0
+
+    #variaveis para o jogo:
     thread_num = threading.current_thread().name  # Obtém o nome da thread (um número)
     image_filename = f"imagem{thread_num}.png"  # Nome da imagem baseado no número da thread
+
+    # Loop principal
     while True:
-        if estado == 0:
+        if estado == 0: # Aberto para conexões
             print(f"Conexão recebida de jogador: {client_socket.getpeername()}")
 
             # Receba dados do cliente
@@ -33,8 +37,10 @@ def handle_client(client_socket):
             response = "Jogo iniciado! Hora de desenhar!"
             client_socket.send(response.encode('utf-8'))
 
-            estado = 1
-        elif estado == 1:
+            estado = 1 # Muda de estado
+        elif estado == 1: # Esperando para receber a imagem
+
+            # Escreve os bytes recebidos no arquivo de imagem
             with open(image_filename, 'wb') as file:
                 while True:
                     data = client_socket.recv(1024)
@@ -42,28 +48,34 @@ def handle_client(client_socket):
                         break
                     file.write(data)
 
+            # Cria janela para abrir a imagem
             root = tk.Tk()
             root.title("Imagem Gerada")
 
+            # Abre o arquivo
             image = Image.open(image_filename)
             photo = ImageTk.PhotoImage(image)
 
+            # Adiciona um label
             label = Label(root, image=photo)
             label.pack()
-
+            
+            # Adiciona a entrada do texto com a tentativa do usuario
             entry = Entry(root, width=20)
             entry.pack()
 
+            # Botao de verificacao
             verificar_button = Button(root, text="Verificar", command=lambda: verificar_tentativa(palavra_correta, entry))
             verificar_button.pack()
 
+            # Mostra o resultado da tentativa no label
             resultado = Label(root, text="")
             resultado.pack()
 
+            # Abre a janela
             root.mainloop()
 
-            estado = 2
-
+            estado = 2 # Agora o cliente já está respondendo
     client_socket.close()
 
 # Defina o endereço e a porta em que o servidor irá escutar
@@ -85,9 +97,11 @@ palavra_correta = ""
 thread_counter = 0
 
 while True:
-    # Aceite conexões de clientes
+    # Aceita conexões de clientes
     client_socket, client_address = server_socket.accept()
     print(f"Conexão recebida de jogador: {client_address}")
+
+    # Cria e incia thread
     thread_counter += 1
     thread_name = str(thread_counter)
     client_handler = threading.Thread(target=handle_client, args=(client_socket,), name=thread_name)
